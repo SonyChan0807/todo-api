@@ -65,21 +65,35 @@ app.get('./todos', function(req, res) {
 //GET /todos/:id
 app.get('/todos/:id', function(req, res) {
 	var todoId = parseInt(req.params.id, 10);
-	var matchedTodo = _.findWhere(todos, {
-		id: todoId
-	}); // replace forEach
-
-	// todos.forEach(function (todo) {
-	// 	if (todo.id === todoId) {
-	// 		matchedTodo = todo;
+	// db.todo.find({
+	// 	where: {
+	// 		id: todoId
 	// 	}
+	// }).then(function (todo) {
+	// 	res.json(todo);
+	// }, function (e) {
+	// 	res.status(400).send();
 	// });
 
-	if (matchedTodo) {
-		res.json(matchedTodo);
-	} else {
-		res.status(404).send();
-	}
+	db.todo.findById(todoId).then(function (todo) {
+		if (!!todo) {
+			res.json(todo);
+		} else {
+			res.status(404).send();
+		}
+	}, function (e) {
+		res.status(500).send();
+	});
+
+
+	// var matchedTodo = _.findWhere(todos, {
+	// 	id: todoId
+	// }); 
+	// if (matchedTodo) {
+	// 	res.json(matchedTodo);
+	// } else {
+	// 	res.status(404).send();
+	// }
 });
 
 //POST /todos/:id
@@ -90,7 +104,7 @@ app.post('/todos', function(req, res) {
 	db.todo.create(body).then(function (todo) {
 		res.json(todo);
 	}, function (e) {
-		res.status.json(e);
+		res.status(400).json(e);
 	});
 
 	// Non-sequel version
