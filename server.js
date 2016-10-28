@@ -17,44 +17,6 @@ app.get('/', function(req, res) {
 
 // GET /todos?completed&q=work
 
-// app.get('/todos', function(req, res) {
-// 	var query = req.query;
-// 	var where = {};
-
-// 	if (query.hasOwnProperty('completed') && query.completed === 'true') {
-// 		where.completed = true;
-// 	} else if (query.hasOwnProperty('completed') && query.completed === 'false') {
-// 		where.completed = false;
-// 	}
-
-// 	if (query.hasOwnProperty('q') && query.q.length > 0) {
-// 		where.description = {
-// 			$like: '%' + query.q + '%'
-// 		}
-// 	}
-// 	console.log(where);
-// 	console.log('testPoint_1');
-	
-// 	// db.todo.findAll({
-// 	// 	where: where
-// 	// }).then(function(todos) {
-// 	// 	res.json(todos);
-// 	// }, function(e) {
-// 	// 	console.log('found nothing');
-// 	// 	res.status(500).send();
-// 	// });
-
-// 	db.todo.findAll({
-// 		where: where
-// 	}).then(function(todos) {
-// 		res.json(todos);
-// 	}, function(e) {
-// 		res.status(500).send();
-// 	});
-
-// });
-
-
 app.get('/todos', function(req, res) {
 	var query = req.query;
 	var where = {};
@@ -79,11 +41,6 @@ app.get('/todos', function(req, res) {
 		res.status(500).send();
 	});
 });
-
-
-
-
-
 
 
 //GET /todos/:id
@@ -166,6 +123,16 @@ app.put('/todos/:id', function(req, res) {
 	});
 });
 
+
+app.post('/users' ,function (req, res) {
+	var body= _.pick(req.body, 'email','password');
+
+	db.user.create(body).then(function (user) {
+		res.json(user.toPublicJSON());
+	}, function (e) {
+		res.status(400).json(e);
+	});
+});
 
 db.sequelize.sync().then(function() {
 	app.listen(PORT, function() {
